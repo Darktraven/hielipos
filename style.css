@@ -28,8 +28,8 @@ body {
     color: var(--dark);
     line-height: 1.5;
     font-size: 16px;
-    height: 100vh;
-    overflow: hidden; /* Avoid pulling on mobile */
+    min-height: 100vh;
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -39,7 +39,7 @@ body {
 .app-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
     max-width: 1200px;
     margin: 0 auto;
     background-color: transparent;
@@ -84,9 +84,17 @@ body {
 
 .content-area {
     display: flex;
+    flex-direction: column;
     flex: 1;
-    overflow: hidden;
     position: relative;
+}
+
+@media (min-width: 769px) {
+    .content-area {
+        flex-direction: row;
+        height: calc(100vh - 70px);
+        overflow: hidden;
+    }
 }
 
 /* SIDEBAR */
@@ -147,9 +155,15 @@ body {
 /* VIEWS WRAPPER */
 .views-wrapper {
     flex: 1;
-    overflow-y: auto;
-    padding: 20px;
+    padding: 15px;
     position: relative;
+}
+
+@media (min-width: 769px) {
+    .views-wrapper {
+        overflow-y: auto;
+        padding: 20px;
+    }
 }
 
 .view {
@@ -390,8 +404,14 @@ select:focus, input:focus {
 .cart-area {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+@media (min-width: 769px) {
+    .cart-area {
+        height: 100%;
+        margin-top: 0;
+    }
 }
 
 .cart-list {
@@ -714,8 +734,8 @@ select:focus, input:focus {
 @media (max-width: 768px) {
     .pos-layout {
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto;
-        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
     }
     
     .selection-area {
@@ -723,15 +743,15 @@ select:focus, input:focus {
     }
     
     .products-catalog {
-        overflow: visible;
         max-height: none;
     }
 
     .sidebar {
         position: fixed;
         left: 0;
-        top: 60px;
+        top: 0;
         bottom: 0;
+        height: 100vh;
         transform: translateX(-100%);
         box-shadow: 0 0 20px rgba(0,0,0,0.2);
     }
@@ -741,25 +761,14 @@ select:focus, input:focus {
     }
 
     .views-wrapper {
-        padding: 15px;
+        padding: 10px;
     }
 
     .cart-area {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: auto;
-        max-height: 50vh;
-        z-index: 80;
-        border-radius: 20px 20px 0 0 !important;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
-    }
-    
-    /* Small workaround to toggle cart visibility on mobile */
-    .cart-area.active {
-        transform: translateY(0);
+        position: sticky;
+        bottom: 10px;
+        z-index: 10;
+        border-radius: 16px !important;
+        box-shadow: 0 -5px 25px rgba(0,0,0,0.1);
     }
 }

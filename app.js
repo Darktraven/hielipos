@@ -83,8 +83,26 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPOSClients();
     renderProductsTable();
     renderClientsTable();
+    setupFilters();
     renderHistory();
 });
+
+function setupFilters() {
+    const filterDate = document.getElementById('filter-date');
+    const filterSearch = document.getElementById('filter-search');
+    const btnClear = document.getElementById('btn-clear-filters');
+
+    const triggerFilter = () => renderHistory();
+
+    filterDate.addEventListener('change', triggerFilter);
+    filterSearch.addEventListener('input', triggerFilter);
+    
+    btnClear.addEventListener('click', () => {
+        filterDate.value = '';
+        filterSearch.value = '';
+        renderHistory();
+    });
+}
 
 function setupNavigation() {
     const navBtns = document.querySelectorAll('.nav-btn');
@@ -493,15 +511,15 @@ function renderClientsTable() {
 // =========================================================
 
 function renderHistory() {
-    // 1. Calculate Today's Stats
-    const today = new Date().setHours(0,0,0,0);
+    // 1. Calculate Today's Stats (Always based on reality, not filters)
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
     
     let todayTotal = 0;
     let todayQty = 0;
 
     sales.forEach(sale => {
-        const saleDate = new Date(sale.date).setHours(0,0,0,0);
-        if (saleDate === today) {
+        if (sale.date.startsWith(todayStr)) {
             todayTotal += sale.total;
             sale.items.forEach(item => {
                 todayQty += item.qty;
@@ -512,14 +530,38 @@ function renderHistory() {
     document.getElementById('stat-today-total').textContent = formatCurrency(todayTotal);
     document.getElementById('stat-today-qty').textContent = todayQty;
 
-    // 2. Render Sales Table
+    // 2. Filter Sales for the Table
+    const filterDateValue = document.getElementById('filter-date').value; // YYYY-MM-DD
+    const filterSearchValue = document.getElementById('filter-search').value.toLowerCase();
+
+    const filteredSales = sales.filter(s => {
+        // Date filter
+        if (filterDateValue && !s.date.startsWith(filterDateValue)) {
+            return false;
+        }
+        
+        // Text filter (Client name or items name)
+        if (filterSearchValue) {
+            const clientMatch = s.client.toLowerCase().includes(filterSearchValue);
+            const itemsMatch = s.items.some(i => i.name.toLowerCase().includes(filterSearchValue));
+            if (!clientMatch && !itemsMatch) return false;
+        }
+
+        return true;
+    });
+
+    // 3. Render Table
     const tbody = document.getElementById('sales-tbody');
     tbody.innerHTML = '';
     
-    // Only show last 50 sales for performance in UI
-    const recentSales = sales.slice(0, 50);
+    const displaySales = filteredSales.slice(0, 100);
 
-    recentSales.forEach(s => {
+    if (displaySales.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:#999;">No se encontraron ventas con estos filtros.</td></tr>';
+        return;
+    }
+
+    displaySales.forEach(s => {
         const tr = document.createElement('tr');
         const itemsSummary = s.items.map(i => `${i.qty}x ${i.name}`).join(', ');
         tr.innerHTML = `

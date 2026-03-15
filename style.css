@@ -32,6 +32,8 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    user-select: auto;
+    -webkit-user-select: auto;
 }
 
 /* ========================================================= 
@@ -306,11 +308,13 @@ select, input {
     padding: 12px 16px;
     border: 1px solid var(--border);
     border-radius: 10px;
-    font-size: 1rem;
+    font-size: 16px; /* Prevents auto-zoom on iOS */
     font-family: inherit;
     transition: border-color 0.2s, box-shadow 0.2s;
     outline: none;
     background: #fafafa;
+    -webkit-appearance: none;
+    user-select: auto;
 }
 
 select:focus, input:focus {

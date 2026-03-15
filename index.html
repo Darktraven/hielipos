@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HieliPOS - Punto de Venta</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF5A5F">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- HEADER -->
+        <header class="top-nav">
+            <h1 class="logo"><i class="fa-solid fa-ice-cream"></i> HieliPOS</h1>
+            <button id="menu-btn" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="content-area">
+
+            <!-- SIDEBAR / MENU (Hidden by default on mobile) -->
+            <nav id="sidebar" class="sidebar hidden">
+                <ul>
+                    <li><button class="nav-btn active" data-target="pos-view"><i class="fa-solid fa-cash-register"></i> Punto de Venta</button></li>
+                    <li><button class="nav-btn" data-target="products-view"><i class="fa-solid fa-box-open"></i> Productos</button></li>
+                    <li><button class="nav-btn" data-target="clients-view"><i class="fa-solid fa-users"></i> Clientes</button></li>
+                    <li><button class="nav-btn" data-target="history-view"><i class="fa-solid fa-chart-line"></i> Ventas & Historial</button></li>
+                </ul>
+            </nav>
+
+            <div class="views-wrapper">
+                
+                <!-- VIEW 1: PUNTO DE VENTA (POS) -->
+                <section id="pos-view" class="view active">
+                    <div class="pos-layout">
+                        <!-- Left/Top side: Selection -->
+                        <div class="selection-area">
+                            <div class="card client-selector">
+                                <h2><i class="fa-solid fa-user-tag"></i> Cliente</h2>
+                                <select id="pos-client-select">
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+
+                            <div class="card products-catalog">
+                                <h2><i class="fa-solid fa-cubes"></i> Catálogo de Hielitos</h2>
+                                <div id="pos-products-grid" class="products-grid">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right/Bottom side: Cart & Checkout -->
+                        <div class="cart-area card glass">
+                            <h2><i class="fa-solid fa-shopping-cart"></i> Cuenta Actual</h2>
+                            
+                            <ul id="cart-items" class="cart-list">
+                                <!-- Populated by JS -->
+                            </ul>
+
+                            <div class="cart-summary">
+                                <div class="summary-row">
+                                    <span>Total:</span>
+                                    <span id="cart-total">$0.00</span>
+                                </div>
+                            </div>
+
+                            <button id="btn-pay" class="btn-primary" disabled><i class="fa-solid fa-money-bill-wave"></i> Cobrar</button>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- VIEW 2: PRODUCTOS -->
+                <section id="products-view" class="view">
+                    <div class="header-action">
+                        <h2>Gestión de Hielitos</h2>
+                        <button id="btn-add-product" class="btn-secondary"><i class="fa-solid fa-plus"></i> Nuevo Hielito</button>
+                    </div>
+                    
+                    <div class="card table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sabor/Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-tbody">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+
+                <!-- VIEW 3: CLIENTES -->
+                <section id="clients-view" class="view">
+                    <div class="header-action">
+                        <h2>Gestión de Clientes</h2>
+                        <button id="btn-add-client" class="btn-secondary"><i class="fa-solid fa-plus"></i> Nuevo Cliente</button>
+                    </div>
+
+                    <div class="card table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre del Cliente</th>
+                                    <th>Teléfono / Info</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clients-tbody">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+
+                <!-- VIEW 4: HISTORIAL DE VENTAS -->
+                <section id="history-view" class="view">
+                    <h2><i class="fa-solid fa-chart-pie"></i> Resumen de Ventas Diarias</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Ventas de Hoy</h3>
+                            <p id="stat-today-total">$0.00</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Hielitos Vendidos</h3>
+                            <p id="stat-today-qty">0</p>
+                        </div>
+                    </div>
+
+                    <div class="card table-container mt-20">
+                        <h3>Últimas Ventas</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha y Hora</th>
+                                    <th>Cliente</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-tbody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALS OVERLAY -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        
+        <!-- Checkout Modal -->
+        <div id="modal-checkout" class="modal glass-modal hidden">
+            <div class="modal-header">
+                <h2>Procesar Pago</h2>
+                <button class="close-modal"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="checkout-display">
+                    <p>Total a Pagar:</p>
+                    <h3 id="checkout-total">$0.00</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label for="checkout-paid"><i class="fa-solid fa-hand-holding-dollar"></i> Efectivo Recibido</label>
+                    <input type="number" id="checkout-paid" placeholder="Ej. 100" min="0" step="0.5">
+                </div>
+
+                <div class="checkout-display change-display">
+                    <p>Cambio a devolver:</p>
+                    <h3 id="checkout-change">$0.00</h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-confirm-sale" class="btn-primary w-100" disabled><i class="fa-solid fa-check"></i> Confirmar Venta</button>
+            </div>
+        </div>
+
+        <!-- Add/Edit Product Modal -->
+        <div id="modal-product" class="modal glass-modal hidden">
+            <div class="modal-header">
+                <h2 id="modal-product-title">Nuevo Hielito</h2>
+                <button class="close-modal"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="product-id">
+                <div class="form-group">
+                    <label for="product-name">Sabor / Nombre</label>
+                    <input type="text" id="product-name" placeholder="Ej. Rompope, Fresa...">
+                </div>
+                <div class="form-group">
+                    <label for="product-price">Precio ($)</label>
+                    <input type="number" id="product-price" placeholder="Ej. 15" min="0" step="0.5">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-save-product" class="btn-primary"><i class="fa-solid fa-save"></i> Guardar</button>
+            </div>
+        </div>
+
+        <!-- Add/Edit Client Modal -->
+        <div id="modal-client" class="modal glass-modal hidden">
+            <div class="modal-header">
+                <h2 id="modal-client-title">Nuevo Cliente</h2>
+                <button class="close-modal"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="client-id">
+                <div class="form-group">
+                    <label for="client-name">Nombre Completo</label>
+                    <input type="text" id="client-name" placeholder="Ej. Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="client-info">Teléfono / Nota (Opcional)</label>
+                    <input type="text" id="client-info" placeholder="Ej. 555-1234...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-save-client" class="btn-primary"><i class="fa-solid fa-save"></i> Guardar</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Mensaje</span>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registrado', reg))
+                .catch(err => console.log('Error registrando Service Worker', err));
+            });
+        }
+    </script>
+</body>
+</html>

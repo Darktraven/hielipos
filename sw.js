@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hielipos-v1';
+const CACHE_NAME = 'hielipos-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
